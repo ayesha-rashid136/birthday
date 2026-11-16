@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>It's My Birthday 🎂</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: #090710;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+}
+
+.heading {
+  font-family: 'Playfair Display', serif;
+}
+
+.glow {
+  text-shadow: 0 0 15px #d946ef, 0 0 35px #9333ea;
+}
+
+.card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(217,70,239,0.25);
+  backdrop-filter: blur(15px);
+  transition: .4s;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 0 25px #a21caf35;
+}
+
+.clickable-card {
+  cursor: pointer;
+}
+.clickable-card:hover {
+  transform: scale(1.03);
+  border-color: #ec4899;
+  box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
+}
+
+.btn {
+  background: linear-gradient(90deg,#9333ea,#db2777);
+  transition: .3s;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px #d946ef;
+}
+
+#invitation {
+  display: none;
+}
+
+.fade {
+  animation: appear 1s ease;
+}
+
+@keyframes appear {
+  from {opacity:0; transform:translateY(25px);}
+  to {opacity:1; transform:translateY(0);}
+}
+
+.star {
+  position: fixed;
+  color: #e879f9;
+  pointer-events: none;
+  animation: float 5s infinite ease-in-out;
+}
+
+@keyframes float {
+  50% {transform:translateY(-25px);}
+}
+
+/* Floating Balloons */
+.balloon-container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  overflow: hidden;
+}
+
+.balloon {
+  position: absolute;
+  bottom: -120px;
+  width: 48px;
+  height: 58px;
+  border-radius: 50% 50% 50% 50% / 45% 45% 55% 55%;
+  opacity: 0.85;
+  pointer-events: auto;
+  cursor: pointer;
+  animation: riseUp linear forwards;
+  box-shadow: inset -6px -6px 15px rgba(0,0,0,0.3), 0 0 15px rgba(255,255,255,0.2);
+  transition: transform 0.15s ease;
+}
+
+.balloon:hover {
+  transform: scale(1.1);
+}
+
+.balloon::before {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 7px solid inherit;
+}
+
+.balloon::after {
+  content: '';
+  position: absolute;
+  bottom: -38px;
+  left: 50%;
+  width: 1.5px;
+  height: 34px;
+  background: rgba(255, 255, 255, 0.35);
+}
+
+@keyframes riseUp {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translateY(-55vh) rotate(6deg);
+  }
+  100% {
+    transform: translateY(-120vh) rotate(-6deg);
+    opacity: 0;
+  }
+}
+
+/* Custom Modal */
+.modal-backdrop {
+  background: rgba(9, 7, 16, 0.85);
+  backdrop-filter: blur(10px);
+}
+</style>
+</head>
+
+<body>
+
+<!-- FLOATING BALLOONS LAYER -->
+<div id="balloonContainer" class="balloon-container"></div>
+
+<!-- TOP CONTROLS: BALLOONS & MUSIC -->
+<div class="fixed top-5 right-5 z-50 flex flex-wrap justify-end gap-2">
+  <button onclick="releaseBalloonBurst(8)"
+  class="bg-purple-900/80 hover:bg-purple-800 border border-pink-500/40 backdrop-blur-md rounded-full px-4 py-3 text-sm shadow-lg flex items-center gap-1.5 transition hover:scale-105">
+  🎈 Release Balloons
+  </button>
+  
+  <button onclick="toggleMusic()" id="musicBtn"
+  class="btn rounded-full px-5 py-3 text-sm shadow-lg flex items-center gap-2 font-medium">
+  🎵 Play Birthday Song
+  </button>
+</div>
+
+<!-- STARS -->
+<div class="star top-20 left-10 text-2xl">✦</div>
+<div class="star top-40 right-10 text-xl">✧</div>
+<div class="star bottom-20 left-20">✦</div>
+
+<!-- HOME PAGE -->
+<section id="home"
+class="min-h-screen flex items-center justify-center text-center px-5">
+
+<div class="fade max-w-2xl">
+
+<p class="text-pink-400 tracking-[6px] text-sm mb-8">
+YOU ARE INVITED TO
+</p>
+
+<div class="text-6xl mb-6">🎂</div>
+
+<h1 class="heading text-6xl md:text-8xl glow mb-5">
+It's My<br>Birthday!
+</h1>
+
+<p class="text-gray-400 tracking-widest text-sm mb-8">
+22 NOVEMBER • A SPECIAL DAY
+</p>
+
+<div class="w-24 h-px bg-pink-500 mx-auto mb-8"></div>
+
+<p class="text-gray-300 mb-8">
+A beautiful celebration is waiting for you...
+</p>
+
+<button onclick="openInvitation()"
+class="btn px-10 py-4 rounded-full font-semibold">
+OPEN YOUR INVITATION ✨
+</button>
+
+<p class="text-gray-600 text-xs mt-10">
+MADE WITH LOVE ♡
+</p>
+
+</div>
+</section>
+
+<!-- INVITATION -->
+<section id="invitation" class="fade">
+
+<div class="min-h-[65vh] flex items-center justify-center text-center px-5">
+
+<div>
+
+<p class="text-pink-400 tracking-[5px] mb-6">
+LET'S CELEBRATE TOGETHER
+</p>
+
+<h1 class="heading text-5xl md:text-7xl glow mb-6">
+Birthday Party
+</h1>
+
+<p class="text-gray-300">
+You're invited to make my special day magical!
+</p>
+
+<p class="text-5xl mt-8">🥂 ✨ 🎀</p>
+
+<a href="#details"
+class="btn inline-block mt-10 px-8 py-3 rounded-full">
+Explore Invitation ↓
+</a>
+
+</div>
+</div>
+
+<!-- DETAILS -->
+<section id="details" class="px-6 py-20">
+
+<h2 class="heading text-4xl text-center mb-12">
+The Special <span class="text-pink-400">Details</span>
+</h2>
+
+<div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+
+<div class="card rounded-2xl p-8 text-center">
+<div class="text-4xl mb-5">📅</div>
+<h3 class="text-pink-400 text-xl mb-3 font-semibold">Date</h3>
+<p>22 November</p>
+<p class="text-gray-500 text-sm mt-2">Birthday Celebration</p>
+</div>
+
+<div class="card rounded-2xl p-8 text-center">
+<div class="text-4xl mb-5">⏰</div>
+<h3 class="text-pink-400 text-xl mb-3 font-semibold">Timing</h3>
+<p>06:00 PM - 11:00 PM</p>
+<p class="text-gray-500 text-sm mt-2">Evening Party</p>
+</div>
+
+<div class="card rounded-2xl p-8 text-center">
+<div class="text-4xl mb-5">📍</div>
+<h3 class="text-pink-400 text-xl mb-3 font-semibold">Venue</h3>
+<p>Grand Celebration Hall</p>
+<p class="text-gray-500 text-sm mt-2">123 Starry Night Ave, City</p>
+</div>
+
+</div>
+</section>
+
+<!-- SPECIAL ATTRACTIONS & ENTERTAINMENT -->
+<section class="px-6 py-20 bg-gradient-to-b from-purple-950/20 via-pink-950/10 to-transparent">
+
+<h2 class="heading text-4xl text-center mb-4">
+Fun & <span class="text-pink-400">Attractions</span>
+</h2>
+
+<p class="text-center text-gray-400 mb-12 max-w-xl mx-auto">
+Get ready for non-stop excitement, surprises, and magical moments throughout the party!
+</p>
+
+<div class="grid md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+
+<div class="card rounded-2xl p-8 text-center relative overflow-hidden">
+  <div class="text-5xl mb-5">🎩✨</div>
+  <h3 class="text-pink-300 text-2xl heading mb-3 font-semibold">Live Magic Show</h3>
+  <p class="text-gray-300 text-sm leading-relaxed">
+    Amazing illusions, mind-blowing tricks, and interactive magic fun for everyone!
+  </p>
+  <span class="inline-block mt-4 text-xs tracking-wider uppercase px-3 py-1 rounded-full bg-purple-900/50 text-pink-300 border border-pink-500/30">
+    Special Magician
+  </span>
+</div>
+
+<div class="card rounded-2xl p-8 text-center relative overflow-hidden">
+  <div class="text-5xl mb-5">🐭🎀</div>
+  <h3 class="text-pink-300 text-2xl heading mb-3 font-semibold">Mickey Mouse Mascot</h3>
+  <p class="text-gray-300 text-sm leading-relaxed">
+    Meet & greet with Mickey Mouse! Dance together and capture unforgettable photos.
+  </p>
+  <span class="inline-block mt-4 text-xs tracking-wider uppercase px-3 py-1 rounded-full bg-pink-900/50 text-pink-300 border border-pink-500/30">
+    Live Character Appearance
+  </span>
+</div>
+
+<div class="card rounded-2xl p-8 text-center relative overflow-hidden">
+  <div class="text-5xl mb-5">🎶🎧</div>
+  <h3 class="text-pink-300 text-2xl heading mb-3 font-semibold">Live Music & DJ</h3>
+  <p class="text-gray-300 text-sm leading-relaxed">
+    Upbeat party tracks, birthday anthems, and non-stop music to keep the celebration alive!
+  </p>
+  <span class="inline-block mt-4 text-xs tracking-wider uppercase px-3 py-1 rounded-full bg-purple-900/50 text-pink-300 border border-pink-500/30">
+    Party Beats & Dance
+  </span>
+</div>
+
+</div>
+</section>
+
+<!-- FOOD MENU -->
+<section class="px-6 py-20 bg-purple-950/10">
+
+<h2 class="heading text-4xl text-center mb-4">
+The Food <span class="text-pink-400">Menu</span>
+</h2>
+
+<p class="text-center text-gray-500 mb-12">
+Good food, good mood!
+</p>
+
+<div class="grid sm:grid-cols-2 md:grid-cols-3 gap-5 max-w-5xl mx-auto">
+
+<div class="card rounded-2xl p-7">
+<div class="text-4xl mb-4">🍕</div>
+<h3 class="text-xl text-pink-300 font-semibold">Main Course</h3>
+<ul class="text-gray-400 mt-4 space-y-2">
+<li>✦ Chicken Biryani</li>
+<li>✦ Chicken Pizza</li>
+<li>✦ Creamy Pasta</li>
+<li>✦ Crispy Fries</li>
+</ul>
+</div>
+
+<div class="card rounded-2xl p-7">
+<div class="text-4xl mb-4">🍰</div>
+<h3 class="text-xl text-pink-300 font-semibold">Desserts</h3>
+<ul class="text-gray-400 mt-4 space-y-2">
+<li>✦ Birthday Cake</li>
+<li>✦ Chocolate Brownies</li>
+<li>✦ Vanilla Ice Cream</li>
+<li>✦ Assorted Cupcakes</li>
+</ul>
+</div>
+
+<div class="card rounded-2xl p-7">
+<div class="text-4xl mb-4">🥤</div>
+<h3 class="text-xl text-pink-300 font-semibold">Drinks</h3>
+<ul class="text-gray-400 mt-4 space-y-2">
+<li>✦ Cold Soft Drinks</li>
+<li>✦ Fresh Mango Juice</li>
+<li>✦ Special Mocktails</li>
+<li>✦ Mineral Water</li>
+</ul>
+</div>
+
+</div>
+</section>
+
+<!-- GUEST LIST -->
+<section class="px-6 py-20">
+
+<h2 class="heading text-4xl text-center mb-4">
+Special <span class="text-pink-400">Guests</span>
+</h2>
+
+<p class="text-center text-gray-500 mb-12">
+Click any category below to see who's coming ♡
+</p>
+
+<div class="card max-w-3xl mx-auto rounded-2xl p-8">
+
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-5 text-center">
+
+<div onclick="showGuests('family')" class="card clickable-card p-6 border border-purple-900 rounded-xl transition">
+<div class="text-4xl mb-2">👑</div>
+<p class="font-semibold text-lg text-pink-300">Family</p>
+<p class="text-xs text-gray-400 mt-1">Tap to view names</p>
+</div>
+
+<div onclick="showGuests('bestfriends')" class="card clickable-card p-6 border border-purple-900 rounded-xl transition">
+<div class="text-4xl mb-2">💗</div>
+<p class="font-semibold text-lg text-pink-300">Best Friends</p>
+<p class="text-xs text-gray-400 mt-1">Tap to view names</p>
+</div>
+
+<div onclick="showGuests('closefriends')" class="card clickable-card p-6 border border-purple-900 rounded-xl transition">
+<div class="text-4xl mb-2">🌸</div>
+<p class="font-semibold text-lg text-pink-300">Close Friends</p>
+<p class="text-xs text-gray-400 mt-1">Tap to view names</p>
+</div>
+
+<div onclick="showGuests('specialguests')" class="card clickable-card p-6 border border-purple-900 rounded-xl transition">
+<div class="text-4xl mb-2">✨</div>
+<p class="font-semibold text-lg text-pink-300">Special Guests</p>
+<p class="text-xs text-gray-400 mt-1">Tap to view names</p>
+</div>
+
+</div>
+</div>
+</section>
+
+<!-- PARTY SCHEDULE -->
+<section class="px-6 py-20 bg-purple-950/10">
+
+<h2 class="heading text-4xl text-center mb-12">
+Party <span class="text-pink-400">Schedule</span>
+</h2>
+
+<div class="max-w-xl mx-auto space-y-5">
+
+<div class="card p-5 rounded-xl flex justify-between items-center">
+<span>🎀 Welcome Guests</span>
+<span class="text-pink-300 font-medium">06:00 PM</span>
+</div>
+
+<div class="card p-5 rounded-xl flex justify-between items-center">
+<span>🍕 Dinner Time</span>
+<span class="text-pink-300 font-medium">07:00 PM</span>
+</div>
+
+<div class="card p-5 rounded-xl flex justify-between items-center">
+<span>🎂 Cake Cutting</span>
+<span class="text-pink-300 font-medium">08:00 PM</span>
+</div>
+
+<div class="card p-5 rounded-xl flex justify-between items-center">
+<span>📸 Photos & Fun</span>
+<span class="text-pink-300 font-medium">09:00 PM</span>
+</div>
+
+<div class="card p-5 rounded-xl flex justify-between items-center">
+<span>💃 Celebration & Music</span>
+<span class="text-pink-300 font-medium">10:00 PM</span>
+</div>
+
+</div>
+</section>
+
+<!-- CONTACT -->
+<section class="px-6 py-24 text-center">
+
+<h2 class="heading text-4xl mb-5">
+Let's <span class="text-pink-400">Connect</span>
+</h2>
+
+<p class="text-gray-400 mb-8">
+Have questions or want to RSVP? Feel free to reach out!
+</p>
+
+<a href="mailto:birthday@example.com?subject=Birthday%20Party%20RSVP"
+class="btn inline-block px-10 py-4 rounded-full font-semibold">
+CONTACT ME 💌
+</a>
+
+<p class="text-gray-500 text-sm mt-8">
+Can't wait to celebrate with you!
+</p>
+
+</section>
+
+<!-- FOOTER -->
+<footer class="text-center border-t border-purple-900/40 py-8">
+
+<p class="heading text-2xl text-pink-400">
+With Love ♡
+</p>
+
+<p class="text-gray-600 text-xs mt-3">
+© 2026 | MY BIRTHDAY CELEBRATION
+</p>
+
+<p class="text-gray-600 text-xs mt-2">
+Made with love & magic ✨
+</p>
+
+</footer>
+</section>
+
+<!-- GUEST LIST MODAL -->
+<div id="guestModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 modal-backdrop hidden">
+  <div class="card w-full max-w-md rounded-2xl p-6 relative border border-pink-500/40 shadow-2xl fade">
+    <button onclick="closeModal()" class="absolute top-4 right-4 text-gray-400 hover:text-pink-400 text-2xl font-bold">&times;</button>
+    <div id="modalIcon" class="text-4xl text-center mb-2">👑</div>
+    <h3 id="modalTitle" class="heading text-2xl text-center text-pink-400 mb-4">Guest List</h3>
+    
+    <div id="modalContent" class="space-y-2 max-h-56 overflow-y-auto pr-1 mb-4">
+      <!-- Dynamic list inserted via JS -->
+    </div>
+
+    <!-- Add Guest Input -->
+    <div class="flex gap-2 mt-3 pt-3 border-t border-purple-900/50">
+      <input type="text" id="newGuestInput" placeholder="Add a name..." 
+        onkeypress="if(event.key === 'Enter') addGuestName()"
+        class="flex-1 bg-white/5 border border-purple-800/60 rounded-xl px-3 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-pink-500">
+      <button onclick="addGuestName()" class="btn px-4 py-2 rounded-xl text-sm font-medium">
+        + Add
+      </button>
+    </div>
+
+    <div class="mt-5 text-center">
+      <button onclick="closeModal()" class="text-gray-400 hover:text-white text-xs underline">Close Window</button>
+    </div>
+  </div>
+</div>
+
+<!-- NOTIFICATION TOAST -->
+<div id="toast" class="fixed bottom-5 left-1/2 transform -translate-x-1/2 bg-purple-950/95 text-white px-6 py-3 rounded-full shadow-lg border border-pink-500 text-sm z-50 transition-all duration-300 opacity-0 pointer-events-none whitespace-nowrap">
+  🎵 Playing Happy Birthday to You!
+</div>
+
+<script>
+// OPEN INVITATION
+function openInvitation() {
+  document.getElementById("home").style.display = "none";
+  document.getElementById("invitation").style.display = "block";
+  window.scrollTo({top:0, behavior:"smooth"});
+  
+  // Start music and release celebratory balloons automatically on user interaction
+  if (!isPlaying) {
+    toggleMusic();
+  }
+  releaseBalloonBurst(12);
+}
+
+// FLOATING BALLOONS SYSTEM
+const balloonColors = [
+  "radial-gradient(circle at 30% 30%, #f472b6, #db2777)", // Pink
+  "radial-gradient(circle at 30% 30%, #c084fc, #7e22ce)", // Purple
+  "radial-gradient(circle at 30% 30%, #fde047, #d97706)", // Gold
+  "radial-gradient(circle at 30% 30%, #67e8f9, #0284c7)"  // Cyan
+];
+
+function createBalloon() {
+  const container = document.getElementById("balloonContainer");
+  if (!container) return;
+
+  const balloon = document.createElement("div");
+  balloon.className = "balloon";
+  
+  const color = balloonColors[Math.floor(Math.random() * balloonColors.length)];
+  const leftPos = Math.random() * 92 + 2; // 2% to 94%
+  const duration = Math.random() * 5 + 7; // 7s to 12s
+  const scale = Math.random() * 0.35 + 0.8; // 0.8 to 1.15
+
+  balloon.style.background = color;
+  balloon.style.left = leftPos + "vw";
+  balloon.style.animationDuration = duration + "s";
+  balloon.style.transform = `scale(${scale})`;
+
+  // Pop balloon on click/tap
+  balloon.onclick = function() {
+    playPopSound();
+    balloon.style.transform = "scale(1.4)";
+    balloon.style.opacity = "0";
+    setTimeout(() => balloon.remove(), 150);
+  };
+
+  container.appendChild(balloon);
+
+  setTimeout(() => {
+    if (balloon.parentNode) {
+      balloon.remove();
+    }
+  }, duration * 1000);
+}
+
+function releaseBalloonBurst(count = 6) {
+  for (let i = 0; i < count; i++) {
+    setTimeout(createBalloon, i * 250);
+  }
+}
+
+// Continuous gentle background balloons
+setInterval(createBalloon, 2200);
+// Initial balloons on page load
+window.addEventListener("load", () => releaseBalloonBurst(5));
+
+function playPopSound() {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.08);
+    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + 0.09);
+  } catch (e) {}
+}
+
+// GUEST DATA AND MODAL LOGIC
+let currentCategory = null;
+const guestData = {
+  family: {
+    title: "Family Members",
+    icon: "👑",
+    names: [
+      "Mom & Dad",
+      "Brother (Ali)",
+      "Sister (Fatima)",
+      "Aunt & Uncle",
+      "Grandma"
+    ]
+  },
+  bestfriends: {
+    title: "Best Friends",
+    icon: "💗",
+    names: [
+      "Ayesha Khan",
+      "Zainab Ahmed",
+      "Hamza Malik",
+      "Usman Raza"
+    ]
+  },
+  closefriends: {
+    title: "Close Friends",
+    icon: "🌸",
+    names: [
+      "Bilal Sheikh",
+      "Sana Tariq",
+      "Danyal Baig",
+      "Maria Farooq",
+      "Hassan Ali"
+    ]
+  },
+  specialguests: {
+    title: "Special Guests",
+    icon: "✨",
+    names: [
+      "Magic Show Magician 🎩",
+      "Mickey Mouse Mascot 🐭",
+      "Live DJ & Music Crew 🎶",
+      "Special Well-Wishers"
+    ]
+  }
+};
+
+function showGuests(category) {
+  currentCategory = category;
+  const data = guestData[category];
+  if (!data) return;
+
+  document.getElementById("modalIcon").innerText = data.icon;
+  document.getElementById("modalTitle").innerText = data.title;
+  renderGuestNames();
+  document.getElementById("guestModal").classList.remove("hidden");
+}
+
+function renderGuestNames() {
+  const data = guestData[currentCategory];
+  const contentContainer = document.getElementById("modalContent");
+  contentContainer.innerHTML = "";
+
+  data.names.forEach((name, index) => {
+    const item = document.createElement("div");
+    item.className = "p-3 bg-white/5 border border-purple-900/50 rounded-xl text-gray-200 flex items-center justify-between px-4";
+    item.innerHTML = `
+      <span class="flex items-center gap-2"><span class="text-pink-400 text-sm">✦</span> ${name}</span>
+      <button onclick="removeGuestName(${index})" class="text-gray-500 hover:text-pink-400 text-xs" title="Remove">✕</button>
+    `;
+    contentContainer.appendChild(item);
+  });
+}
+
+function addGuestName() {
+  const input = document.getElementById("newGuestInput");
+  const name = input.value.trim();
+  if (name && currentCategory) {
+    guestData[currentCategory].names.push(name);
+    input.value = "";
+    renderGuestNames();
+    showToast(`✨ Added ${name} to ${guestData[currentCategory].title}`);
+  }
+}
+
+function removeGuestName(index) {
+  if (currentCategory) {
+    guestData[currentCategory].names.splice(index, 1);
+    renderGuestNames();
+  }
+}
+
+function closeModal() {
+  document.getElementById("guestModal").classList.add("hidden");
+  currentCategory = null;
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+  const modal = document.getElementById("guestModal");
+  if (event.target === modal) {
+    closeModal();
+  }
+}
+
+// REAL "HAPPY BIRTHDAY TO YOU" MELODY SYNTHESIZER
+let audioCtx = null;
+let isPlaying = false;
+let melodyTimer = null;
+let noteIndex = 0;
+
+// Frequencies in Hz
+const N = {
+  G4: 392.00,
+  A4: 440.00,
+  B4: 493.88,
+  C5: 523.25,
+  D5: 587.33,
+  E5: 659.25,
+  F5: 698.46,
+  G5: 783.99
+};
+
+// Exact "Happy Birthday to You" notes & durations (in ms)
+const happyBirthdaySong = [
+  // Hap-py Birth-day to you
+  { freq: N.G4, dur: 300 }, { freq: N.G4, dur: 150 }, { freq: N.A4, dur: 450 },
+  { freq: N.G4, dur: 450 }, { freq: N.C5, dur: 450 }, { freq: N.B4, dur: 850 },
+
+  // Hap-py Birth-day to you
+  { freq: N.G4, dur: 300 }, { freq: N.G4, dur: 150 }, { freq: N.A4, dur: 450 },
+  { freq: N.G4, dur: 450 }, { freq: N.D5, dur: 450 }, { freq: N.C5, dur: 850 },
+
+  // Hap-py Birth-day dear [Name]
+  { freq: N.G4, dur: 300 }, { freq: N.G4, dur: 150 }, { freq: N.G5, dur: 450 },
+  { freq: N.E5, dur: 450 }, { freq: N.C5, dur: 450 }, { freq: N.B4, dur: 450 },
+  { freq: N.A4, dur: 850 },
+
+  // Hap-py Birth-day to you
+  { freq: N.F5, dur: 300 }, { freq: N.F5, dur: 150 }, { freq: N.E5, dur: 450 },
+  { freq: N.C5, dur: 450 }, { freq: N.D5, dur: 450 }, { freq: N.C5, dur: 1100 }
+];
+
+function toggleMusic() {
+  const btn = document.getElementById("musicBtn");
+  
+  if (!isPlaying) {
+    isPlaying = true;
+    startMusic();
+    btn.innerHTML = "⏸ Pause Song";
+    showToast("🎵 Playing 'Happy Birthday to You'!");
+  } else {
+    isPlaying = false;
+    stopMusic();
+    btn.innerHTML = "🎵 Play Birthday Song";
+    showToast("⏸ Music paused.");
+  }
+}
+
+function startMusic() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === 'suspended') {
+    audioCtx.resume();
+  }
+
+  function scheduleNextNote() {
+    if (!isPlaying) return;
+
+    const currentNote = happyBirthdaySong[noteIndex % happyBirthdaySong.length];
+    playChimeNote(currentNote.freq, currentNote.dur / 1000);
+
+    noteIndex++;
+    // Add slight pause after completing the full verse
+    const extraPause = (noteIndex % happyBirthdaySong.length === 0) ? 600 : 40;
+    melodyTimer = setTimeout(scheduleNextNote, currentNote.dur + extraPause);
+  }
+
+  scheduleNextNote();
+}
+
+function playChimeNote(freq, durationSec) {
+  try {
+    const now = audioCtx.currentTime;
+    
+    // Main warm tone
+    const osc1 = audioCtx.createOscillator();
+    // Soft bell overtone
+    const osc2 = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc1.type = 'triangle';
+    osc1.frequency.setValueAtTime(freq, now);
+
+    osc2.type = 'sine';
+    osc2.frequency.setValueAtTime(freq * 2, now);
+
+    const osc2Gain = audioCtx.createGain();
+    osc2Gain.gain.setValueAtTime(0.06, now);
+
+    gain.gain.setValueAtTime(0.001, now);
+    gain.gain.linearRampToValueAtTime(0.22, now + 0.03);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + durationSec + 0.25);
+
+    osc1.connect(gain);
+    osc2.connect(osc2Gain);
+    osc2Gain.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc1.start(now);
+    osc2.start(now);
+    osc1.stop(now + durationSec + 0.3);
+    osc2.stop(now + durationSec + 0.3);
+  } catch (e) {
+    console.error(e);
+  }
+}
+
+function stopMusic() {
+  if (melodyTimer) {
+    clearTimeout(melodyTimer);
+    melodyTimer = null;
+  }
+}
+
+function showToast(message) {
+  const toast = document.getElementById("toast");
+  toast.innerText = message;
+  toast.style.opacity = "1";
+  setTimeout(() => {
+    toast.style.opacity = "0";
+  }, 3000);
+}
+</script>
+
+</body>
+</html>
